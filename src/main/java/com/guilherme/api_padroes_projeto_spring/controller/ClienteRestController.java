@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
  * a complexidade de integrações (Banco de Dados H2 e API do ViaCEP) em uma
  * interface simples e coesa (API REST).
  *
- * @author falvojr
+ * @author gumeeee
  */
 @RestController
 @RequestMapping("api/v1/clientes")
 public class ClienteRestController {
 
-    @Autowired
+    @Autowired()
     private ClienteService clienteService;
 
     @GetMapping
