@@ -61,6 +61,12 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${openapi.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.9.0</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

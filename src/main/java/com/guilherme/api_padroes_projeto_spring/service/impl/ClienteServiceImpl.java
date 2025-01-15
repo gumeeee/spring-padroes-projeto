@@ -7,10 +7,17 @@ import com.guilherme.api_padroes_projeto_spring.model.Endereco;
 import com.guilherme.api_padroes_projeto_spring.model.EnderecoRepository;
 import com.guilherme.api_padroes_projeto_spring.service.ClienteService;
 import com.guilherme.api_padroes_projeto_spring.service.ViaCepService;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.OutputStreamWriter;
 import java.util.Optional;
+
 
 /**
  * Implementação da <b>Strategy</b> {@link ClienteService}, a qual pode ser
@@ -67,6 +74,28 @@ public class ClienteServiceImpl implements ClienteService {
         clienteRepository.deleteById(id);
     }
 
+    public Resource exportarDados(String formato) {
+        Iterable<Cliente> clientes = clienteRepository.findAll();
+        if ("csv".equalsIgnoreCase(formato)) {
+            return exportarDadosCsv(clientes);
+        }
+        throw new UnsupportedOperationException("Formato não suportado: " + formato);
+    }
+
+    private Resource exportarDadosCsv(Iterable<Cliente> clientes) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(); CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(out), CSVFormat.DEFAULT.withHeader("ID", "Nome", "CEP", "Endereco"))) {
+
+            for (Cliente cliente : clientes) {
+                printer.printRecord(cliente.getId(), cliente.getNome(), cliente.getEndereco().getCep(), cliente.getEndereco().getLogradouro());
+            }
+            printer.flush();
+            return new ByteArrayResource(out.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao exportar dados em CSV", e);
+        }
+
+    }
+
     private void salvarClienteComCep(Cliente cliente) {
         String cep = cliente.getEndereco().getCep();
         Endereco endereco = enderecoRepository.findById(cep).orElseGet(() -> {
@@ -79,5 +108,6 @@ public class ClienteServiceImpl implements ClienteService {
         clienteRepository.save(cliente);
     }
 }
+
 
 
