@@ -2,6 +2,7 @@ package com.guilherme.api_padroes_projeto_spring.service;
 
 import com.guilherme.api_padroes_projeto_spring.model.Cliente;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,4 +24,5 @@ public interface ClienteService {
 
     void deletar(Long id);
 
+    Resource exportarDados(String formato);
 }
